@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Railt\Storage\Drivers;
 
 use Railt\Io\Readable;
-use Railt\Reflection\Contracts\Document;
 use Railt\Storage\Storage;
 
 /**
@@ -21,9 +20,9 @@ class NullableStorage implements Storage
     /**
      * @param Readable $readable
      * @param \Closure $then
-     * @return Document
+     * @return object|mixed
      */
-    public function remember(Readable $readable, \Closure $then): Document
+    public function remember(Readable $readable, \Closure $then)
     {
         return $then($readable);
     }

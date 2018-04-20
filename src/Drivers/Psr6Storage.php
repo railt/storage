@@ -12,10 +12,8 @@ namespace Railt\Storage\Drivers;
 use Psr\Cache\CacheException;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Log\InvalidArgumentException;
+use Psr\Cache\InvalidArgumentException;
 use Railt\Io\Readable;
-use Railt\Reflection\Contracts\Document;
-use Railt\SDL\Exceptions\CompilerException;
 use Railt\Storage\Storage;
 
 /**
@@ -50,7 +48,8 @@ class Psr6Storage implements Storage
         CacheItemPoolInterface $pool,
         \Closure $persist,
         int $timeout = self::DEFAULT_REMEMBER_TIME
-    ) {
+    )
+    {
         $this->pool    = $pool;
         $this->persist = $persist;
         $this->timeout = $timeout;
@@ -59,12 +58,12 @@ class Psr6Storage implements Storage
     /**
      * @param Readable $readable
      * @param \Closure $then
-     * @return Document
-     * @throws CompilerException
+     * @return object|mixed
+     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws \Exception
-     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function remember(Readable $readable, \Closure $then): Document
+    public function remember(Readable $readable, \Closure $then)
     {
         $exists = $this->pool->hasItem($readable->getHash());
 
@@ -77,18 +76,17 @@ class Psr6Storage implements Storage
 
     /**
      * @param Readable $readable
-     * @return Document
-     * @throws \Railt\SDL\Exceptions\CompilerException
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @return object|mixed
+     * @throws \InvalidArgumentException
      */
-    private function restore(Readable $readable): Document
+    private function restore(Readable $readable)
     {
         try {
             $result = $this->pool->getItem($readable->getHash());
 
             return $this->touch($result)->get();
         } catch (InvalidArgumentException | \Throwable $fatal) {
-            throw CompilerException::wrap($fatal);
+            throw new \InvalidArgumentException($fatal->getMessage(), 0, $fatal);
         }
     }
 
@@ -103,21 +101,21 @@ class Psr6Storage implements Storage
 
     /**
      * @param Readable $readable
-     * @param Document $document
-     * @return Document
+     * @param mixed $data
+     * @return mixed
      * @throws \Exception
      */
-    private function store(Readable $readable, Document $document): Document
+    private function store(Readable $readable, $data)
     {
         try {
             /** @var CacheItemInterface $item */
-            $item = ($this->persist)($readable, $document);
+            $item = ($this->persist)($readable, $data);
             $this->touch($item);
             $this->pool->save($item);
         } catch (CacheException $error) {
             throw $error->getPrevious();
         }
 
-        return $document;
+        return $data;
     }
 }

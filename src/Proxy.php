@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Railt\Storage;
 
 use Railt\Io\Readable;
-use Railt\Reflection\Contracts\Document;
 
 /**
  * Class Proxy
@@ -41,11 +40,11 @@ class Proxy implements Storage
     /**
      * @param Readable $readable
      * @param \Closure $then
-     * @return Document
+     * @return object|mixed
      */
-    public function remember(Readable $readable, \Closure $then): Document
+    public function remember(Readable $readable, \Closure $then)
     {
-        return $this->front->remember($readable, function (Readable $readable) use ($then): Document {
+        return $this->front->remember($readable, function (Readable $readable) use ($then) {
             return $this->fallback->remember($readable, $then);
         });
     }

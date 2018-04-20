@@ -9,11 +9,8 @@ declare(strict_types=1);
 
 namespace Railt\Storage\Drivers;
 
-use Cache\Adapter\Common\Exception\CachePoolException;
 use Psr\SimpleCache\CacheInterface;
 use Railt\Io\Readable;
-use Railt\Reflection\Contracts\Document;
-use Railt\SDL\Exceptions\CompilerException;
 use Railt\Storage\Storage;
 
 /**
@@ -47,28 +44,23 @@ class Psr16Storage implements Storage
     /**
      * @param Readable $readable
      * @param \Closure $then
-     * @return Document
+     * @return mixed
      * @throws \Exception
-     * @throws CompilerException
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function remember(Readable $readable, \Closure $then): Document
+    public function remember(Readable $readable, \Closure $then)
     {
-        $document = $this->storage->get($readable->getHash());
+        $data = $this->storage->get($readable->getHash());
 
         // If entity exists
-        if ($document instanceof Document) {
-            return $document;
+        if (\is_object($data)) {
+            return $data;
         }
 
-        $callee = function (Document $document) use ($readable): void {
-            try {
-                $this->storage->set($readable->getHash(), $document, $this->timeout);
-            } catch (CachePoolException $error) {
-                throw $error->getPrevious();
-            }
-        };
+        $result = $then($readable);
 
-        return \tap($then($readable), $callee);
+        $this->storage->set($readable->getHash(), $data, $this->timeout);
+
+        return $result;
     }
 }

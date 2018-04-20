@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Railt\Storage\Drivers;
 
 use Railt\Io\Readable;
-use Railt\Reflection\Contracts\Document;
 use Railt\Storage\Storage;
 
 /**
@@ -19,24 +18,21 @@ use Railt\Storage\Storage;
 class ArrayStorage implements Storage
 {
     /**
-     * @var array|Document[]
+     * @var array|object[]
      */
     private $storage = [];
 
     /**
      * @param Readable $readable
      * @param \Closure $then
-     * @return object
+     * @return object|mixed
      */
     public function remember(Readable $readable, \Closure $then)
     {
         $key = $readable->getHash();
 
         if (! \array_key_exists($key, $this->storage)) {
-            /** @var Document $document */
-            $document = $then($readable);
-
-            $this->storage[$key] = $document;
+            $this->storage[$key] = $then($readable);
         }
 
         return $this->storage[$key];

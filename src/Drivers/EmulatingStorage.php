@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace Railt\Storage\Drivers;
 
 use Railt\Io\Readable;
-use Railt\Reflection\Contracts\Document;
-use Railt\SDL\Exceptions\CompilerException;
 use Railt\Storage\Storage;
 
 /**
@@ -27,43 +25,40 @@ class EmulatingStorage implements Storage
     /**
      * @param Readable $readable
      * @param \Closure $then
-     * @return Document
-     * @throws CompilerException
+     * @return object|mixed
+     * @throws \BadMethodCallException
      */
-    public function remember(Readable $readable, \Closure $then): Document
+    public function remember(Readable $readable, \Closure $then)
     {
         $key = $readable->getHash();
 
         if (! \array_key_exists($key, $this->storage)) {
-            /** @var Document $document */
-            $document = $then($readable);
-
-            $this->storage[$key] = $this->encode($document);
+            $this->storage[$key] = $this->encode($then($readable));
         }
 
         return $this->decode($this->storage[$key]);
     }
 
     /**
-     * @param Document $document
+     * @param $data
      * @return string
-     * @throws \Railt\SDL\Exceptions\CompilerException
+     * @throws \BadMethodCallException
      */
-    private function encode(Document $document): string
+    private function encode($data): string
     {
         try {
-            return \serialize($document);
+            return \serialize($data);
         } catch (\Error $e) {
             $error = \sprintf('Error while entity serializing: %s', $e->getMessage());
-            throw new CompilerException($error, $e->getCode(), $e);
+            throw new \BadMethodCallException($error, $e->getCode(), $e);
         }
     }
 
     /**
      * @param string $data
-     * @return Document
+     * @return mixed
      */
-    private function decode(string $data): Document
+    private function decode(string $data)
     {
         return \unserialize($data, [
             'allowed_classes' => true,
