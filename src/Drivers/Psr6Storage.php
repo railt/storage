@@ -48,8 +48,7 @@ class Psr6Storage implements Storage
         CacheItemPoolInterface $pool,
         \Closure $persist,
         int $timeout = self::DEFAULT_REMEMBER_TIME
-    )
-    {
+    ) {
         $this->pool    = $pool;
         $this->persist = $persist;
         $this->timeout = $timeout;
