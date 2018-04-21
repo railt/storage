@@ -7,7 +7,7 @@
     <a href="https://styleci.io/repos/117291851?branch=master"><img src="https://styleci.io/repos/117291851/shield?b=master" alt="StyleCI" /></a>
     <a href="https://packagist.org/packages/railt/storage"><img src="https://poser.pugx.org/railt/storage/version" alt="Latest Stable Version"></a>
     <a href="https://packagist.org/packages/railt/storage"><img src="https://poser.pugx.org/railt/storage/v/unstable" alt="Latest Unstable Version"></a>
-    <a href="https://raw.githubusercontent.com/railt/storage/master/LICENSE"><img src="https://poser.pugx.org/railt/storage/license" alt="License MIT"></a>
+    <a href="https://raw.githubusercontent.com/railt/storage/master/LICENSE.md"><img src="https://poser.pugx.org/railt/storage/license" alt="License MIT"></a>
 </p>
 
 # Storage
