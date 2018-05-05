@@ -19,7 +19,7 @@ interface Storage
     /**
      * @param Readable $readable
      * @param \Closure $then
-     * @return object|\Railt\Reflection\Contracts\Document
+     * @return object|\Railt\SDL\Contracts\Document
      */
     public function remember(Readable $readable, \Closure $then);
 }
