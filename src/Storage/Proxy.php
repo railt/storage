@@ -28,12 +28,13 @@ class Proxy implements Storage
 
     /**
      * Proxy constructor.
+     *
      * @param Storage $front
      * @param Storage $fallback
      */
     public function __construct(Storage $front, Storage $fallback)
     {
-        $this->front    = $front;
+        $this->front = $front;
         $this->fallback = $fallback;
     }
 
