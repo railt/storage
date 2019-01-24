@@ -40,7 +40,7 @@ class EmulatingStorage implements Storage
     }
 
     /**
-     * @param mixed $data
+     * @param $data
      * @return string
      * @throws \BadMethodCallException
      */
