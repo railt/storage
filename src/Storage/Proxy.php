@@ -34,7 +34,7 @@ class Proxy implements Storage
      */
     public function __construct(Storage $front, Storage $fallback)
     {
-        $this->front = $front;
+        $this->front    = $front;
         $this->fallback = $fallback;
     }
 
